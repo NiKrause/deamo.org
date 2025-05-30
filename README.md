@@ -1,6 +1,6 @@
-# DeAmo.org - Dezentralisierte Argumentationsmodelle
+# DeAmo.org - Dezentralized Argument Models
 
-DeAmo.org is a powerful web application for analyzing and visualizing argumentation structures using AI. It helps users break down complex arguments into clear, visual representations using Mermaid diagrams.
+DeAmo.org is a serverless, progressive web application for analyzing and visualizing argumentation structures using AI. It helps users break down complex arguments into clear, visual representations using Mermaid diagrams.
 
 ## Features
 
@@ -16,6 +16,7 @@ DeAmo.org is a powerful web application for analyzing and visualizing argumentat
 - **Content Analysis**: Understand argument structures and identify logical fallacies
 - **Education**: Teach logical reasoning and visualize argument structures
 - **Professional Writing**: Plan article structures and analyze competitor arguments
+- **Political Discourse**: Map and analyze political arguments, debates, and policy positions
 
 ## Getting Started
 
@@ -63,7 +64,7 @@ npm run preview
 ## Technical Requirements
 
 - Modern web browser with JavaScript
-- (Optional) OpenRouter API key
+- OpenRouter API key / or other AI API 
 - Internet connection for API access
 
 ## Privacy
@@ -74,7 +75,7 @@ npm run preview
 
 ## License
 
-[Add your license information here]
+MIT License - See [LICENSE](LICENSE) file for details
 
 ## Support
 
