@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Run the ipfs add command and capture the output
-output=$(ipfs add -r build  )
+output=$(ipfs add -r build/)
 
 # Extract the CID using awk or cut
 cid=$(echo "$output" | tail -n 1 | awk '{print $2}')
