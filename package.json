@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
-		"ipfs-publish": "npm version patch && npm run build && ./ipfs-publish.sh",
+		"ipfs-publish": "BASE_PATH=/ipfs npm version patch && npm run build && ./ipfs-publish.sh",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
