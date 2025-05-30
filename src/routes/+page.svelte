@@ -2,6 +2,7 @@
   export const ssr = false;
   import { onMount } from 'svelte';
   import mermaid from 'mermaid';
+  import { analyzeText, AVAILABLE_MODELS } from '$lib/ai-agent';
 
   let subject = '';
   let content = '';
@@ -10,21 +11,7 @@
   let error = '';
   let apiKey = ''; // OpenRouter API-Schlüssel
   let selectedModel = 'anthropic/claude-3-opus-20240229';
-
-  // Liste der verfügbaren Modelle
-  const models = [
-    { id: 'anthropic/claude-3-opus-20240229', name: 'Claude 3 Opus', free: false },
-    { id: 'anthropic/claude-3-sonnet-20240229', name: 'Claude 3 Sonnet', free: false },
-    { id: 'anthropic/claude-3-haiku-20240307', name: 'Claude 3 Haiku', free: false },
-    { id: 'openai/gpt-4o', name: 'GPT-4o', free: false },
-    { id: 'openai/gpt-4-turbo', name: 'GPT-4 Turbo', free: false },
-    { id: 'openai/gpt-3.5-turbo', name: 'GPT-3.5 Turbo', free: true },
-    { id: 'google/gemini-1.5-pro', name: 'Gemini 1.5 Pro', free: false },
-    { id: 'google/gemini-1.0-pro', name: 'Gemini 1.0 Pro', free: true },
-    { id: 'meta-llama/llama-3-70b-instruct', name: 'Llama 3 70B', free: true },
-    { id: 'mistralai/mistral-large-latest', name: 'Mistral Large', free: false },
-    { id: 'mistralai/mistral-7b-instruct', name: 'Mistral 7B', free: true }
-  ];
+  const models = AVAILABLE_MODELS;
 
   // Mermaid initialisieren und gespeicherte Daten laden
   onMount(() => {
@@ -220,7 +207,7 @@
   let urlLoading = false; // Loading state for URL parsing
 
   // Modify the analyzeText function to correctly handle the Mermaid code extraction
-  async function analyzeText() {
+  async function handleAnalyzeText() {
     if (!subject || !content) {
       error = 'Bitte gib sowohl Betreff als auch Inhalt ein.';
       return;
@@ -230,75 +217,12 @@
     error = null;
 
     try {
-      // Wenn ein API-Schlüssel vorhanden ist, versuche die API zu verwenden
-      if (apiKey) {
-        try {
-          const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${apiKey}`,
-              'HTTP-Referer': 'Deamo.org',
-              'X-Title': 'Deamo.org'
-            },
-            body: JSON.stringify({
-              model: selectedModel,
-              messages: [
-                {
-                  role: 'system',
-                  content: `Du bist ein Experte für Argumentationsanalyse. Analysiere den folgenden Text, identifiziere alle Argumente und ihre Prämissen, und erstelle ein Mermaid-Flussdiagramm, das die Argumentationsstruktur darstellt.
-                  
-                  Verwende folgendes Format für das Mermaid-Diagramm:
-                  \`\`\`mermaid
-                  flowchart TD
-                    A[Hauptthese] --> B[Argument 1]
-                    A --> C[Argument 2]
-                    B --> D[Prämisse 1.1]
-                    B --> E[Prämisse 1.2]
-                    C --> F[Prämisse 2.1]
-                    ...
-                  \`\`\`
-                  
-                  Gib NUR das Mermaid-Diagramm zurück, ohne zusätzlichen Text oder Erklärungen. Generiere keine für die Kompilierung verbotene Zeichen z.B. Anführungszeichen \"\" "`
-                },
-                {
-                  role: 'user',
-                  content: `Betreff: ${subject}\n\nInhalt: ${content}`
-                }
-              ]
-            })
-          });
-
-          if (!response.ok) {
-            throw new Error(`API-Fehler: ${response.status}`);
-          }
-
-          const data = await response.json();
-          const assistantMessage = data.choices[0]?.message?.content || '';
-          
-          // Extrahiere den Mermaid-Code aus der Antwort
-          const mermaidMatch = assistantMessage.match(/```mermaid\s*([\s\S]*?)\s*```/);
-          if (mermaidMatch && mermaidMatch[1]) {
-            // Clean up the extracted code
-            mermaidMarkdown = mermaidMatch[1]
-              .trim()
-              .replace(/"/g, "'") // Replace double quotes with single quotes
-              .replace(/\\/g, '\\\\'); // Escape backslashes
-          } else {
-            throw new Error('Konnte kein Mermaid-Diagramm in der Antwort finden.');
-          }
-        } catch (apiErr) {
-          console.error('API-Fehler:', apiErr);
-          // Bei API-Fehler verwenden wir das Beispiel-Diagramm
-          generateExampleDiagram();
-        }
+      const result = await analyzeText(apiKey, selectedModel, subject, content);
+      if (result.error) {
+        error = result.error;
       } else {
-        // Wenn kein API-Schlüssel vorhanden ist, verwende das Beispiel-Diagramm
-        generateExampleDiagram();
+        mermaidMarkdown = result.mermaidMarkdown;
       }
-      
-      // Warte auf den nächsten Render-Zyklus und rendere dann das Diagramm
-      setTimeout(renderMermaid, 0);
     } catch (err) {
       error = `Fehler: ${err.message}`;
     } finally {
@@ -446,7 +370,7 @@
   </div>
 
   <button
-    on:click={analyzeText}
+    on:click={handleAnalyzeText}
     disabled={loading}
     class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-blue-300 mb-6"
   >
