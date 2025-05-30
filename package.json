@@ -6,6 +6,7 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
+		"ipfs-publish": "npm version patch && npm run build && ./ipfs-publish.sh",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
@@ -44,6 +45,7 @@
 		]
 	},
 	"dependencies": {
-		"mermaid": "^11.6.0"
+		"mermaid": "^11.6.0",
+		"version": "^0.1.2"
 	}
 }
