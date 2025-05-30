@@ -2,11 +2,12 @@
 	import '../app.css';
 
 	let { children } = $props();
-	const blogName = 'DeAmo.org'; // You can change this to your preferred name
+	const appName = 'DeAmo.org'; // You can change this to your preferred name
+	const version = __APP_VERSION__;
 </script>
 
 <svelte:head>
-	<title>{blogName} v{version}</title>
+	<title>{appName} v{version}</title>
 </svelte:head>
 
 {@render children()}
