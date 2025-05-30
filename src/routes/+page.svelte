@@ -1,5 +1,4 @@
 <script>
-  export const ssr = false;
   import { onMount } from 'svelte';
   import mermaid from 'mermaid';
   import { analyzeText, AVAILABLE_MODELS } from '$lib/ai-agent';
