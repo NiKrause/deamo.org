@@ -8,8 +8,8 @@ cid=$(echo "$output" | tail -n 1 | awk '{print $2}')
 echo "latest IPFS CID $cid"
 
 # Run the ipfs name publish command with the extracted CID
-ipfs name publish --key=deam.org /ipfs/$cid
-echo "IPFS name orbitblog updated with CID $cid"
+ipfs name publish --key=deamo.org /ipfs/$cid
+echo "IPFS name deamo.org updated with CID $cid"
 # Update the vercel.json file with the new CID
 # sed -i '' "s|/ipfs/[^\"}]*|/ipfs/$cid|g" vercel.json
 
@@ -22,7 +22,7 @@ echo "IPFS CID $cid pinned to ipfs.le-space.de"
 
 
 # echo the result of name resolve should be the same as the cid
-result=$(ssh -t root@ipfs.le-space.de "su ipfs -c 'ipfs name resolve --nocache /ipns/k51qzi5uqu5djjnnjgtviql86f19isjyz6azhw48ovgn22m6otstezp2ngfs8g'" | tr -d '\r' | tr -d '\n')
+result=$(ssh -t root@ipfs.le-space.de "su ipfs -c 'ipfs name resolve --nocache /ipns/k51qzi5uqu5dko7tu0mmmf6oktlfjzp4gv54kk3ks6opshm07zvb3ur8y7kiy8'" | tr -d '\r' | tr -d '\n')
 
 # Debug with hexdump to see exactly what characters we're getting
 echo "Result raw:"
